@@ -2,24 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Message;
 use App\Events\MessageSent;
+use App\Models\Message;
 use App\Models\Room;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
+
     public function __construct()
     {
         // Tüm işlemler için oturum kontrolü (giriş yapmış olma) zorunlu kılınır.
         $this->middleware('auth');
     }
     
-    public function welcome()
-    {
-        return view('welcome');
-    }
     public function index()
     {
         return Message::all();
