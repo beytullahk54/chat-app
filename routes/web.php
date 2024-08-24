@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\VersionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Auth
+
+Route::get('version/{id?}', [VersionController::class, 'index']);
 
 Route::get('login', [AuthenticatedSessionController::class, 'create'])
     ->name('login')
@@ -36,6 +39,8 @@ Route::get('/', [DashboardController::class, 'index'])
     ->middleware('auth');
 
 Route::get('/room/{id?}', [ChatController::class, 'room']);
+Route::post('/addRoom', [ChatController::class, 'addRoom']);
 
+Route::get('/getRooms', [ChatController::class, 'getRooms']);
 Route::get('/messages/{id?}', [ChatController::class, 'index']);
 Route::post('/messages/{id?}', [ChatController::class, 'sendMessage']);

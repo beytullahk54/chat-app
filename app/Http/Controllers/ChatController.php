@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\MessageSent;
 use App\Models\Message;
 use App\Models\Room;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -32,6 +33,19 @@ class ChatController extends Controller
     {
         $rooms = Room::all(); // Tüm odaları alır
         return response()->json($rooms);
+    }
+
+    public function addRoom()
+    {
+        try{
+
+            $room = new Room();
+            $room->save();
+    
+            return response()->json($room);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
     public function sendMessage(Request $request,$id)
     {
