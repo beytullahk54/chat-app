@@ -7,6 +7,7 @@ use App\Models\Message;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class ChatController extends Controller
 {
@@ -17,9 +18,14 @@ class ChatController extends Controller
         $this->middleware('auth');
     }
     
-    public function index()
+    public function index($id)
     {
-        return Message::all();
+        return Message::where("room_id","=",$id)->get();
+    }
+    
+    public function room($id)
+    {
+        return Inertia::render('Dashboard/Room',["id"=>$id]);
     }
 
     public function getRooms()
@@ -27,10 +33,11 @@ class ChatController extends Controller
         $rooms = Room::all(); // Tüm odaları alır
         return response()->json($rooms);
     }
-    public function sendMessage(Request $request)
+    public function sendMessage(Request $request,$id)
     {
         $message = Message::create([
             'body' => $request->body,
+            'room_id' => $id,
             'user_id' => Auth::id(), // Oturum açmış kullanıcının ID'sini ekler
         ]);
 

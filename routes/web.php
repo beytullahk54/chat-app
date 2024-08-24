@@ -35,5 +35,7 @@ Route::get('/', [DashboardController::class, 'index'])
     ->name('dashboard')
     ->middleware('auth');
 
-Route::get('/messages', [ChatController::class, 'index']);
-Route::post('/messages', [ChatController::class, 'sendMessage']);
+Route::get('/room/{id?}', [ChatController::class, 'room']);
+
+Route::get('/messages/{id?}', [ChatController::class, 'index']);
+Route::post('/messages/{id?}', [ChatController::class, 'sendMessage']);

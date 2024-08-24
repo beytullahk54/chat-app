@@ -28,12 +28,12 @@ class MessageSent implements ShouldBroadcast
     {
         Log::info("On: " . $this->message->body);
 
-        return new PrivateChannel('chat');
+        return new PrivateChannel('chat.'.$this->message->room_id);
     }
 
     public function broadcastWith()
     {
-        Log::info("With: " . $this->message->body);
+        Log::info("With: " . $this->message);
 
         return ['message' => $this->message];
     }

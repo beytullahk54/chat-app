@@ -1,7 +1,9 @@
 <template>
   <div>
     <Head title="Dashboard" />
-    <Rooms></Rooms>
+    <h1 class="mb-8 text-3xl font-bold"> {{ id }} Nolu Oda </h1>
+    <ChatMessage :messages="messages" /><br>
+    <ChatForm :messages="messages" @send="addMessage" />
   </div>
 </template>
 
@@ -17,11 +19,12 @@ import Echo from 'laravel-echo';
 
 import axios from 'axios';
 
+const props = defineProps({ id: String });
 const messages = ref([]);
 
 const fetchMessages = async () => {
   try {
-    const response = await axios.get('/messages');
+    const response = await axios.get(`/messages/${props.id}`);
     messages.value = response.data;
   } catch (error) {
     console.error('Error fetching messages:', error);
@@ -30,7 +33,7 @@ const fetchMessages = async () => {
 
 const addMessage = async (message) => {
   try {
-    const response = await axios.post('/messages', message);
+    const response = await axios.post(`/messages/${props.id}`, message);
     //messages.value.push(message); // Optimistically adding the message to the list
     console.log('Message sent:', response.data);
   } catch (error) {
@@ -41,8 +44,7 @@ const addMessage = async (message) => {
 onMounted(async () => {
   await fetchMessages();
 
-
-  window.Echo.private('chat')
+  window.Echo.private(`chat.${props.id}`)
     .listen('MessageSent', (e) => {
       console.log('Message received:', e.message);
       messages.value.push(e.message);
@@ -52,7 +54,6 @@ onMounted(async () => {
 
 
 // Use Inertia.js layout component
-
 
 defineOptions({ layout: Layout })
 
