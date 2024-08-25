@@ -27,6 +27,15 @@ class VersionController extends Controller
             Schema::create('rooms', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name')->nullable();
+                $table->id('user_id')->nullable();
+                $table->timestamps();
+            });
+        }
+        if (!Schema::hasTable('user_rooms')) {
+            Schema::create('user_rooms', function (Blueprint $table) {
+                $table->increments('id');
+                $table->foreignId('user_id');
+                $table->foreignId('room_id');
                 $table->timestamps();
             });
         }

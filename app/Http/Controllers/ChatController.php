@@ -26,12 +26,30 @@ class ChatController extends Controller
     
     public function room($id)
     {
+        $user = Auth::user();
+    
+        // Odayı bul
+        $room = Room::find($id);
+    
+        // Oda bulunamadıysa veya kullanıcı bu odaya erişim yetkisine sahip değilse
+        if (!$room || ($user->id !== $room->user_id && !$room->users()->where('user_id', $user->id)->exists())) {
+            // Yetkisiz erişim, 403 Forbidden hata sayfası göster
+            abort(403, 'Bu odaya erişim yetkiniz yok.');
+        }
+    
         return Inertia::render('Dashboard/Room',["id"=>$id]);
     }
 
     public function getRooms()
     {
-        $rooms = Room::all(); // Tüm odaları alır
+
+        $user = Auth::User();
+
+        $rooms = Room::where('user_id', $user->id)
+            ->orWhereHas('users', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->get();
         return response()->json($rooms);
     }
 
