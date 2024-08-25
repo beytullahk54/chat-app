@@ -1,9 +1,17 @@
 <template>
   <div>
     <Head title="Dashboard" />
-    <h1 class="mb-8 text-3xl font-bold"> {{ id }} Nolu Oda </h1>
-    <ChatMessage :messages="messages" /><br>
-    <ChatForm :messages="messages" @send="addMessage" />
+    <div class="flex h-screen overflow-hidden">
+
+      <div class="w-1/4 bg-white border-r border-gray-300 p-5">
+      <Rooms></Rooms>
+      </div>
+
+      <div class="flex-1">
+        <ChatMessage :messages="messages" :id="id"/><br>
+        <ChatForm :messages="messages" @send="addMessage" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -46,7 +54,6 @@ onMounted(async () => {
 
   window.Echo.private(`chat.${props.id}`)
     .listen('MessageSent', (e) => {
-      console.log('Message received:', e.message);
       messages.value.push(e.message);
     });
 
