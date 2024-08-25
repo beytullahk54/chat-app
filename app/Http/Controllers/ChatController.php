@@ -32,7 +32,7 @@ class ChatController extends Controller
         $room = Room::find($id);
     
         // Oda bulunamadıysa veya kullanıcı bu odaya erişim yetkisine sahip değilse
-        if (!$room || ($user->id !== $room->user_id && !$room->users()->where('user_id', $user->id)->exists())) {
+        if (!$user->is_admin && (!$room || ($user->id !== $room->user_id && !$room->users()->where('user_id', $user->id)->exists()))) {
             // Yetkisiz erişim, 403 Forbidden hata sayfası göster
             abort(403, 'Bu odaya erişim yetkiniz yok.');
         }
@@ -44,12 +44,17 @@ class ChatController extends Controller
     {
 
         $user = Auth::User();
-
-        $rooms = Room::where('user_id', $user->id)
+        if($user->is_admin)
+        {
+            $rooms = Room::get();
+        }else{
+            $rooms = Room::where('user_id', $user->id)
             ->orWhereHas('users', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
             ->get();
+        }
+      
         return response()->json($rooms);
     }
 

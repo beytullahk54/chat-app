@@ -2,8 +2,36 @@
     <div>
         
         <header class="bg-white p-4 text-gray-700">
-            <h1 class="text-2xl font-semibold">
-                {{ props.id }} Nolu Oda</h1>
+           
+            <div class="flex justify-between items-center w-full">
+                <h1 class=" text-2xl font-semibold w-1/2">
+                    {{ props.id }} Nolu Oda</h1>
+            
+                <button @click="showUsers = !showUsers"  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" >
+                    Kullanıcılar
+                </button>
+                <!-- Kullanıcılar Modal -->
+                <div v-if="showUsers" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div class="bg-white p-6 rounded shadow-lg w-1/3">
+                    <h2 class="text-2xl mb-4">Kullanıcıları Yönet</h2>
+                    <input type="text" v-model="search" placeholder="Kullanıcı ara..." class="w-full p-2 mb-4 border rounded">
+                    
+                    <ul class="mb-4">
+                        <li v-for="user in filteredUsers" :key="user.id" class="flex justify-between items-center">
+                        <span>{{ user.name }}</span>
+                        <button @click="addUserToRoom(user)" class="bg-green-500 hover:bg-green-700 text-white py-1 px-3 rounded">
+                            Ekle
+                        </button>
+                        </li>
+                    </ul>
+
+                    <button @click="showUsers = false" class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded">
+                        Kapat
+                    </button>
+                    </div>
+                </div>
+            </div>
+                
         </header>
         <div id="messages"  class=" pl-5 pr-5 flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch" v-if="messages.length>0">
             <div v-for="message in messages" :key="message.id" class="chat-message">
@@ -22,6 +50,32 @@
 <script setup>
 
 const props = defineProps({ messages:Object,id: String });
+
+
+import { ref, computed } from 'vue';
+
+const showUsers = ref(false);
+
+const search = ref('');
+const users = ref([
+  // Bu kısma sunucudan gelecek kullanıcıları ekleyin
+  { id: 1, name: 'Kullanıcı 1' },
+  { id: 2, name: 'Kullanıcı 2' },
+  { id: 3, name: 'Kullanıcı 3' },
+]);
+
+const toggleUserModal = () => {
+  showUsers.value = !showUsers.value;
+};
+
+const filteredUsers = computed(() => {
+  return users.value.filter(user => user.name.toLowerCase().includes(search.value.toLowerCase()));
+});
+
+const addUserToRoom = (user) => {
+  // Kullanıcıyı odaya eklemek için gerekli işlemler
+  console.log(`User ${user.name} added to room`);
+};
 </script>
 
 <style>

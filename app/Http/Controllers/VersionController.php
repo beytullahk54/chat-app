@@ -39,6 +39,13 @@ class VersionController extends Controller
                 $table->timestamps();
             });
         }
+
+        if (!Schema::hasColumn('users', 'is_admin')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('is_admin')->nullable();
+            });
+        }
+
     }
 
 
