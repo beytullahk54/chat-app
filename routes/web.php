@@ -39,6 +39,10 @@ Route::get('/', [DashboardController::class, 'index'])
     ->middleware('auth');
 
 Route::get('/room/{id?}', [ChatController::class, 'room']);
+Route::get('/room/{room}/users', [ChatController::class, 'getRoomsUsers']);
+Route::post('/room/{room}/add-user', [ChatController::class, 'getRoomAddUser']);
+Route::post('/room/{room}/remove-user', [ChatController::class, 'getRoomRemoveUser']);
+
 Route::post('/addRoom', [ChatController::class, 'addRoom']);
 
 Route::get('/getRooms', [ChatController::class, 'getRooms']);
